@@ -23,9 +23,38 @@ app.get('/blockchain', function (req, res) {
 app.post('/transaction', function(req, res){
     //console.log(req.body);
     //res.send(`The amount of the transactionis ${req.body.amount} bitcoin`);
-    const blockIndex = bitcoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient);
-    res.json({ note: `Transaction will be added in block ${blockIndex}.`});
+    //const blockIndex = bitcoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient);
+    //res.json({ note: `Transaction will be added in block ${blockIndex}.`});
+    //
+    const newTransaction = req.body;
+    const blockIndex = bitcoin.addTransactionToPendingTransaction(newTransaction);
+    res.json({ note: `Transaction will be added in block ${blockIndex}.` })
+
+
 })
+
+app.post('/transaction/broadcast', function(req, res){
+    const newTransaction = bitcoin.createNewTransaction(req.body.amount, req.bbody.sender, req.body.recipient);
+    bitcoin.addTransactionToPendingTransaction(newTransaction);
+
+    const requestPromises = [];
+    bitcoin.networkNodes.forEach(networkNodeUrl => {
+        const requestOptions = {
+            uri: networkNodeUrl + '/transaction',
+            method: 'POST',
+            body: newTransaction,
+            json: true
+        };
+        requestPromises.push(rp(requestOptions));
+    });
+
+    Promise.all(requestPromises)
+    .then(data => {
+        res.json({ note: 'Transaction created and broadcasted successfully.' });
+    })
+})
+
+
 
 //Create a new block for us
 app.get('/mine', function(req, res){
