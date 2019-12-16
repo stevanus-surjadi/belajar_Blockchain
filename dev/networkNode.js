@@ -34,7 +34,7 @@ app.post('/transaction', function(req, res){
 })
 
 app.post('/transaction/broadcast', function(req, res){
-    const newTransaction = bitcoin.createNewTransaction(req.body.amount, req.bbody.sender, req.body.recipient);
+    const newTransaction = bitcoin.createNewTransaction(req.body.amount, req.body.sender, req.body.recipient);
     bitcoin.addTransactionToPendingTransaction(newTransaction);
 
     const requestPromises = [];
