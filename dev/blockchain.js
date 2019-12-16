@@ -5,7 +5,7 @@ class Blockchain {
         this.newTransaction = [];
     }
 
-    //..
+    //..Testing Command Git Sync
 }
 */
 
