@@ -74,7 +74,7 @@ app.get('/mine', function(req, res){
     const requestPromises = [];
     bitcoin.networkNodes.forEach(networkNodeUrl => {
         const requestOptions = {
-            uri: networkNodeUrl + '/receiveNewBlock',
+            uri: networkNodeUrl + '/receive-new-block',
             method: 'POST',
             body: { newBlock: newBlock },
             json: true
@@ -94,18 +94,19 @@ app.get('/mine', function(req, res){
             },
             json: true
         };
-        return rp(requestPromises);
+        return rp(requestOptions);
     })
     .then(data => {
         res.json({ note: `New Block mined & broadcast successfully`,
                     block: newBlock
         })
-    })
-
+    });
+    /*
     res.json({ 
-        note: "New block minedsuccessfully",
+        note: "New block mined successfully",
         block: newBlock
     });
+    */
 });
  
 
@@ -119,6 +120,17 @@ app.post('/receive-new-block', function(req, res){
     if(correctHash && correctIndex){
         bitcoin.chain.push(newBlock);
         bitcoin.pendingTransactions = [];
+        res.json({
+            note: 'New block received and accepted.',
+            newBlock: newBlock 
+        })
+    }
+    else
+    {
+        res.json({
+            note: 'New block rejected.',
+            newBlock: newBlock
+        })
     }
 
 })

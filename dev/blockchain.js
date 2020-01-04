@@ -37,7 +37,6 @@ Blockchain.prototype.createNewBlock = function(nonce, previousBlockHash, hash)
 
     this.pendingTransactions = [];
     this.chain.push(newBlock);
-
     return newBlock;
 }
 
@@ -80,8 +79,20 @@ Blockchain.prototype.proofOfWork = function(previousBlockHash, currentBlockData)
     return nonce;
 }
 
-Blockchain.prototype.addNewBlock = function(){
+Blockchain.prototype.chainIsValid = function(blockchain){
+    let validChain = true;
 
+    for(var i = 1; i < blockchain.length; i++)
+    {
+        const currentBlock = blockchain[i];
+        const prevBlock = blockchain[i - 1];
+        const blockHash = this.hashBlock(prevBlock['hash'],)
+
+        if(currentBlock['previousBlockHash'] !== prevBlock['hash']) validChain = false;
+
+    }
+
+    return validChain;
     
 }
 
